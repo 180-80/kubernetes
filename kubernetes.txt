@@ -165,6 +165,7 @@ revisionHistory로 롤링업데이트 이력 숫자 정할 수 있음
 maxSurge : replicas 기준으로 업데이트 시 동시 실행할 수 있는 파드 수 백분율
 maxUnavailable: Terminate되는 파드 수 조정
 kubernetes.io/change-cause: version 1.15 을 통해 롤링업데이트 history를 깔끔하게 정리 가능
+deployment를 통해 롤링 업데이트 시 replicaset이 새롭게 생성되어 파드 내 컨테이너 버전이 새롭게 생성되는 것.
 
 [command]
 kubectl explain pod [해당 API 리소스 정보 확인]
@@ -233,28 +234,26 @@ kubectl scale rc rc-nginx --replicas=2 [rc-nginx의 replicationcontroller 레플
 kubectl edit rc rc-nginx [rc-nginx의 replicationcontroller 편집모드]
 kubectl delete rc --all [현재 ns의 모든 replicationcontroller 삭제]
 
-kubectl get rs -o wide
-kubectl scale rs rs-nginx --replicas=2
-kubectl delete rs rs-nginx
+kubectl get rs -o wide [replicaset 정보 확인]
+kubectl scale rs rs-nginx --replicas=2 [replicaset의 replicas 수 조절]
+kubectl delete rs rs-nginx [replicas 삭제]
 
-kubectl get deploy,rs,pod
-kubectl rollout history deploy app-deploy
-kubectl set image deploy app-deploy web=nginx:1.15 --record
-kubectl set image deploy app-deploy web=nginx:1.16 --record
-kubectl set image deploy app-deploy web=nginx:1.17 --record
-kubectl set image deploy app-deploy web=nginx:1.18 --record
+kubectl get deploy,rs,pod [deployment, replicaset, pod 정보 한번에 확인]
+kubectl rollout history deploy app-deploy [app-deploy 라는 deployment에 대한 롤링업데이트 기록 확인]
+kubectl set image deploy app-deploy web=nginx:1.15 --record [app-deploy라는 deployment의 컨테이너 롤링업데이트]
+kubectl set image deploy app-deploy web=nginx:1.16 --record [app-deploy라는 deployment의 컨테이너 롤링업데이트]
+kubectl set image deploy app-deploy web=nginx:1.17 --record [app-deploy라는 deployment의 컨테이너 롤링업데이트]
+kubectl set image deploy app-deploy web=nginx:1.18 --record [app-deploy라는 deployment의 컨테이너 롤링업데이트]
 
-kubectl rollout status deploy app-deploy
-kubectl rollout status deploy app-deploy
+kubectl rollout status deploy app-deploy [app-deploy 라는 deployment의 롤링업데이트 실시간 현황 확인]
+kubectl rollout pause deploy app-deploy [app-deploy 라는 deployment의 롤링업데이트 일시 중지]
+kubectl rollout resume deploy app-deploy [app-deploy 라는 deployment의 롤링업데이트 재개]
+kubectl rollout history deploy app-deploy [app-deploy 라는 deployment의 롤링업데이트 기록 확인]
 
-kubectl rollout pause deploy app-deploy
-kubectl rollout resume deploy app-deploy
+kubectl rollout undo deploy app-deploy --to-revision=3 [app-deploy 라는 deployment 롤링업데이트 history에서 3번으로 롤백]
+kubectl rollout undo deploy app-deploy [app-deploy 라는 deployment 이전 버전으로 롤백]
 
-kubectl rollout history deploy app-deploy
-kubectl rollout history deploy app-deploy
-
-kubectl rollout undo deploy app-deploy --to-revision=3
-kubectl rollout undo deploy app-deploy
+kubectl apply -f deploy-exam.yaml [vi 편집기로 deploy 버전 수정 후 apply하면 롤링업데이트되며, history에도 기록됨]
 
 [TBR]
 Apache Httpd Webserver
