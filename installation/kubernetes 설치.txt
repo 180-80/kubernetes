@@ -26,7 +26,7 @@ echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
 (에러2)ip_forward are not set to 1
 echo 1 > /proc/sys/net/ipv4/ip_forward
 (에러3)[ERROR CRI]: container runtime is not running
-vi /etc/containerd/config.toml 에서 disable plugin의 cri 삭제
+vi /etc/containerd/config.toml 에서 disable plugin의 cri 삭제 후 restart
 
 [master]
 cat > token.txt
