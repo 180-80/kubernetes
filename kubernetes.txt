@@ -1,4 +1,4 @@
-#1
+#1 쿠버네티스 개념
 - 컨테이너 동작을 위해 시스템에 도커를 설치해야함.
 - 하이퍼바이저로 하드웨어 리소스를 가상화해서 VM 생성 가능.
 - 하이퍼바이저가 사실상 호스트OS.
@@ -9,7 +9,7 @@
 - 기술스택 계층 : 베어메탈-인프라(OpenStack)-OS-Container Engine(Docker)-Ochestration Service(K8S)
 - 선언적 API는 사용자가 컨트롤플레인에 명령을 하면 자동으로 컨테이너를 관리해주는 관리의 편의성을 뜻함.
 
-#2 [쿠버네티스 설치]
+#2 쿠버네티스 설치
 - CNI란 컨테이너 네트워크 인터페이스로, 파드 네트워크라고도 함. K8S 구성에서 노드 간 통신은 네트워크가 연결되어있으므로 가능, 컨테이너는 각 IP를 가지고 동작하는데 컨테이너 간 통신이 가능해야함. 이를 지원하는게 CNI이며 다양한 플러그인으로 설치하게됨. (플라넬, 칼리코, 위브넷, 큐브라우터 등) 컨테이너 - CNI - 물리네트워크 - CNI - 컨테이너 흐름으로 통신.
 - 워커노드는 실제 컨테이너를 동작시킴.
 - 구성 환경은 Windows OS - VirtualBox Hypervisor - VM(컨트롤플레인, 워커노드, 워커노드)
@@ -23,15 +23,11 @@
 - kubeadm을 통해 클러스터 생성함. "kubeadm init" 커맨드를 master 에서만 실행하여 클러스터 생성. master에 API, controller, schduler, etcd, coreDNS가 구성됨.
 - master 준비 완료 후 worker를 join 시켜야함. join 시킨 후 master에서 get nodes 하면 그제서야 master, worker1, worker2 모두 확인됨.
 
-#3
+#3 kubectl
 kubectl 명령어를 사용하려면 kubectl을 설치해야함.
 kubectl은 사용자가 master에게 명령을 내리는 명령어.
 
-#6
-curl은 커맨드라인 기반의 웹브라우저
-elinks는 커맨드라인 기반이지만 약간의 GUI를 흉내낸 웹브라우저
-
-#7
+#7 클러스터의 노드 구성
 [master]
 API서버
 - 사용자의 kubectl 요청 검수 및 수행
@@ -51,13 +47,12 @@ Container runtime
 - docker와 같은 컨테이너 엔진
 - 실제로 파드를 실행하는 플랫폼
 
-#8
+#8 namespace
 namespace는 클러스터를 논리적으로 구분해서 운영할 수 있는 기능.
-컴퓨터 구조 만화
 기본 네임스페이스를 설정하려면, config안에 새로운 context를 생성해야함
 네임스페이스 삭제 시 ns 내부에 모든 API리소스 삭제됨
 
-#9
+#9 YAML
 yaml은 사람이 쉽게 읽을 수 있는 데이터 직렬화 양식
 들여쓰기를 기준으로 부모 자식 관계 형성
 콜론을 기준으로 key-value 형성
@@ -65,15 +60,15 @@ yaml은 사람이 쉽게 읽을 수 있는 데이터 직렬화 양식
 top-down 방식 아니고 전체 내용 API 서버가 확인
 API 오브젝트는 특정 API 리소스의 인스턴스
 
-#10
+#10 pod
 쿠버네티스에서는 컨테이너를 파드라는 단위로 관리하며 하나의 파드에 1개 이상의 컨테이너가 포함됨.
 멀티컨테이너 파드 내부에 컨테이너는 동일한 IP주소를 사용함. 따라서 웹서버가 동작중이지 않은 컨테이너 내부에서 웹서버 컨테이너 포트로 접속하면 IP주소가 동일하므로 웹페이지가 확인됨.
 
-#11
+#11 pod
 파드는 스케줄링 받기 전까지는 Pending 상태
 master노드에 해당 노드를 구성하는 API 리소스가 파드 형태로 실행중임
 
-#12
+#12 pod-livenessProbe
 셀프힐링 기능이 컨테이너를 보장해주는 기능이며, 셀프 힐링 기능 안에 livenessProbe 기능
 livenessProbe는 컨테이너가 정상적으로 실행되는지 자동으로 확인하는 기능
 주기적으로 컨테이너의 응답을 확인하여 컨테이너 정상 수행 여부 확인
@@ -91,12 +86,12 @@ livenessProbe는 파드가 아닌 컨테이너를 재실행하므로 IP주소는
 	- failure=3, 3번 연속 실패 시 실패로 간주
 livenessProbe로 에러 발생 시 컨테이너 Killing 후 이미지 다시 Pulling, Create, Start. 그러면 RESTARTS 횟수 늘어남.
 
-#13
+#13 pause container
 파드 메인 컨테이너 실행 전에 미리 실행시키는 컨테이너. 즉, 메인 컨테이너의 전제조건이나 환경을 구성해주기 위한 컨테이너.
 pause 컨테이너는 파드 생성 시 항상 생성되며 파드의 IP, 호스트네임, 네트워크 등 인프라를 구성해줌.
 pause 컨테이너는 파드의 컨테이너 현황에는 확인되지 않음.
 
-#14
+#14 static pod
 static 파드는 API 서버에 요청을 보내지 않음.
 각 노드의 kubelet static 파드 디렉토리에 yaml 파일 생성하면 파드가 생성됨
 /etc/kubernetes/manifests 가 일반적으로 static 파드 디렉토리임
@@ -105,7 +100,7 @@ master에서 확인하면 파드 이름 + 노드 이름으로 파드 생성됨.
 kubectl delete pod 로 삭제해도 다시 실행되며, 해당 yaml 파일 삭제해야함
 master에서는 etcd, apiserver,controller, scheduler, kubelet 이 정적 파드로 실행중임
 
-#15
+#15 pod 컴퓨팅 리소스 할당
 파드에 컴퓨팅 리소스 할당하기.
 스케줄러가 워커노드의 하드웨어 리소스를 고려해서 파드를 배치
 파드의 리소스 Request, Limit 설정 가능
@@ -129,7 +124,7 @@ spec:
         cpu: 600m
         memory: 1000Mi
 
-#16 파드의 환경변수 설정하기
+#16 파드 환경변수 설정
 파드의 yaml 파일에 env를 추가해서 파드 실행 시 해당 컨테이너에 환경변수 추가 및 변경 가능
 기존 환경변수는 변경되고, 신규 환경변수면 추가됨
 파드 구성 패턴 종류
