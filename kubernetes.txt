@@ -168,6 +168,13 @@ deployment를 통해 롤링 업데이트 시 replicaset이 새롭게 생성되�
 노드 로그 에이전트 같은 프로그램에 사용
 롤링 업데이트도 가능
 
+#21 Statefulset
+파드의 이름을 보장해주는 컨트롤러
+replicas를 통해 파드 개수를 보장
+metadata.name으로 해당 파드의 이름 보장
+파드 이름은 순서대로 name-0, name-1, name-2 형식
+롤링업데이트 및 롤백 가능
+
 [command]
 kubectl explain pod [해당 API 리소스 정보 확인]
 
@@ -263,3 +270,9 @@ kubectl rollout undo ds daemonset-nginx [daemonset 롤백]
 
 kubeadm reset [join 기록 및 구성 삭제]
 kubeadm join 192.168.137.100:6443 --token ... --discovery-token-ca-cert-hash ... [master 재 join]
+
+kubectl get statefulset [해당 클러스터에서 실행중인 statefulset 확인]
+kubectl scale statefulset sf-nginx --replicas=4 [statefulset으로 실행중인 파드 scale out]
+kubectl edit statefulset sf-nginx [statefulset vi 편집모드로 롤링업데이트 가능]
+kubectl rollout undo statefulset sf-nginx [sf-nginx라는 statefulset 롤백]
+kubectl rollout history statefulset sf-nginx [sf-nginx라는 statefulset 롤링업데이트 기록 확인]
