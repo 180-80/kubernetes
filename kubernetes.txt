@@ -204,6 +204,7 @@ kubectl create -f webserver-pod.yaml [yaml 파일 기반으로 파드 생성]
 
 kubectl edit deploy mainui [mainui deployment 수정을 위해 vi에디터 오픈]
 kubectl delete pod webserver [webserver 파드 제거]
+kubectl delete pod 파드명 --grace-period=0 --force [파드 강제 삭제]
 kubectl delete deploy mainui [mainui deployment 제거]
 
 kubectl port-forward webserver 8080:80 [로컬시스템 8080 포트로 접속 시 webserver 컨테이너의 80포트로 접속시키는 포트포워딩]
